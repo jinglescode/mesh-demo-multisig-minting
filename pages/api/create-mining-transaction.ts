@@ -57,11 +57,12 @@ export default async function handler(
   const forgingScript = ForgeScript.withOneSignature(appWalletAddress);
 
   // define assets
-  const assetName = "MeshToken";
+  const assetName = "MeshBlueBanner";
 
   const assetMetadata: AssetMetadata = {
-    name: "Mesh Token",
-    image: "ipfs://QmRzicpReutwCkM6aotuKjErFCUD213DpwPq6ByuzMJaua",
+    name: "Mesh Blue Banner",
+    // image: "ipfs://QmRzicpReutwCkM6aotuKjErFCUD213DpwPq6ByuzMJaua",
+    image: 'https://meshjs.dev/logo-mesh/mesh.png',
     mediaType: "image/jpg",
     description: "This NFT is minted by Mesh (https://meshjs.dev/).",
   };

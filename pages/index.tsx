@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { NextPage } from "next";
-import { useWallet } from "@meshsdk/react";
-import { CardanoWallet } from "@meshsdk/react";
+import { CardanoWallet, useWallet } from "@meshsdk/react";
+import { KoiosProvider } from "@meshsdk/core";
 import { createTransaction } from "@/backend";
 
 const Home: NextPage = () => {
@@ -35,41 +35,64 @@ const Home: NextPage = () => {
 export default Home;
 
 function MintSection() {
+  const koiosProvider = new KoiosProvider("preprod");
+
   const { wallet } = useWallet();
   const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
   async function startMinting() {
+    setSuccess(false);
+    setTxHash(undefined);
     setLoading(true);
     const recipientAddress = await wallet.getChangeAddress();
     const utxos = await wallet.getUtxos();
     console.log("starting minting", { recipientAddress, utxos });
     const { unsignedTx } = await createTransaction(recipientAddress, utxos);
-    console.log({ unsignedTx });
-    await signTransaction(unsignedTx);
-  }
 
-  async function signTransaction(unsignedTx: string) {
     const signedTx = await wallet.signTx(unsignedTx, true);
     const txHash = await wallet.submitTx(signedTx);
     console.log({ txHash });
     setLoading(false);
+    setTxHash(txHash);
+
+    koiosProvider.onTxConfirmed(txHash, () => {
+      console.log("Transaction confirmed");
+      setSuccess(true);
+    });
   }
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => startMinting()}
-        disabled={loading}
-        style={{
-          fontSize: "20px",
-          margin: "16px",
-          padding: "10px",
-          backgroundColor: loading ? "orange" : "grey",
-        }}
-      >
-        Mint Now!
-      </button>
+      {txHash ? (
+        <>
+          <p>
+            <b>Tx Hash:</b>
+            <br />
+            {txHash}
+          </p>
+          {success ? (
+            <p>Transaction confirmed</p>
+          ) : (
+            <p>Waiting confirmation...</p>
+          )}
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => startMinting()}
+          disabled={loading}
+          style={{
+            fontSize: "20px",
+            margin: "16px",
+            padding: "10px",
+            backgroundColor: loading ? "orange" : "grey",
+          }}
+        >
+          Mint Now!
+        </button>
+      )}
     </>
   );
 }
