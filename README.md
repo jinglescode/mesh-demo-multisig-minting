@@ -3,42 +3,43 @@
 
 ### Setup
 
-- create folder, `tokens_sales`, open VS code
+- create folder, `vending_machine`, open VSCode
 - go to https://meshjs.dev/guides/nextjs, setup project and install Mesh
 
-### Wallet
+### Step 1: Connect Browser Wallet
 
 - go to https://meshjs.dev/react/ui-components
 - add CardanoWallet component
 - go to https://meshjs.dev/apis/browserwallet
 - add button and get wallet address, `await wallet.getChangeAddress()`
 
-### Minting backend API
+### Step 2: Setup App Wallet
+
+- create `create-mining-transaction.ts` file under `pages/api`
+- get new wallet from https://meshjs.dev/apis/appwallet or your own wallet
+- create koios provider instance
+- initialize AppWallet
+
+### Step 3: Create Minting Transaction
 
 - go to https://meshjs.dev/guides/multisig-minting
-- create `create-mining-transaction.ts` file
-- get new wallet from https://meshjs.dev/apis/appwallet or your own wallet
-- init AppWallet
 - create ForgeScript
 - create AssetMetadata
-- create Mint
 - create Transaction
+- sign the Transaction
 
-### Backend
+### Step 4: Call the Minting endpoint
 
 - install axios
 - create `backend` folder and index.ts file
 - create `post()` function
 - create `createTransaction()` function
-
-### Minting function
-
 - add `await wallet.getUtxos();`
 - add `await createTransaction(recipientAddress, utxos);`
 - add `await wallet.signTx(unsignedTx, true);`
 - add `await wallet.submitTx(signedTx);`
 
-## Add confirmation
+### Bonus: Listen for TX confirmation
 
 - add `koiosProvider.onTxConfirmed`
 
