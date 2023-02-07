@@ -46,3 +46,8 @@
 ### UI
 
 - add simple UI look and feel
+
+### Vercel
+
+- sign in Vercel
+- create new project and link it
