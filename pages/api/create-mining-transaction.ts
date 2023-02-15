@@ -87,7 +87,7 @@ export default async function handler(
   tx.sendLovelace(bankWalletAddress, costLovelace);
   tx.setChangeAddress(recipientAddress);
   const _unsignedTx = await tx.build();
-  const unsignedTx = await appWallet.signTx(_unsignedTx);
+  const unsignedTx = await appWallet.signTx(_unsignedTx, true);
 
   res.status(200).json({ unsignedTx: unsignedTx });
 }
